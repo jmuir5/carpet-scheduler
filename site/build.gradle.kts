@@ -32,7 +32,9 @@ kotlin {
             implementation(libs.kobweb.silk)
             implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
-            
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+
+
         }
         jvmMain.dependencies {
             compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime

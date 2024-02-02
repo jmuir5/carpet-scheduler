@@ -1,0 +1,55 @@
+package com.noxapps.carpetScheduler.calendar
+
+
+import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import com.noxapps.carpetScheduler.JobObject
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.theme.shapes.Rect
+import com.varabyte.kobweb.silk.theme.shapes.clip
+import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Text
+
+
+@Composable
+fun ColumnScope.jobsBlock(jobs:List<JobObject>){
+    var extraWeight =4f
+    jobs.forEach {
+        P(attrs = Modifier
+            .padding(2.px)
+            .margin(2.px, 4.px, 2.px, 4.px)
+            .width(90.percent)
+            .background(it.color())
+            .height(it.height().px)
+            .clip(shape = Rect(0,5.px))
+            .toAttrs()) {
+            Text(
+                value = it.title,
+            )
+        }
+        extraWeight-=it.weight()
+    }
+    P(attrs = Modifier
+        //.padding(2.px)
+        .margin(2.px)
+        .fillMaxWidth()
+        .height(calcHeight(extraWeight.toInt()).px)
+        .toAttrs()) {
+        Text(
+            value = " ",
+        )
+    }
+
+}
+
+
+
+fun calcHeight(size:Int):Int {
+    return ((size*25)+(4*(size)))
+}
+
