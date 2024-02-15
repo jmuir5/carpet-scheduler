@@ -1,10 +1,9 @@
 package com.noxapps.carpetScheduler.calendar
 
 
-import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import com.noxapps.carpetScheduler.JobObject
+import com.noxapps.carpetScheduler.dataStructures.ConciseJobObject
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -17,7 +16,7 @@ import org.jetbrains.compose.web.dom.Text
 
 
 @Composable
-fun ColumnScope.jobsBlock(jobs:List<JobObject>){
+fun ColumnScope.jobsBlock(jobs:List<ConciseJobObject>){
     var extraWeight =4f
     jobs.forEach {
         P(attrs = Modifier

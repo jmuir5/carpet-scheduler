@@ -1,12 +1,12 @@
-package com.noxapps.carpetScheduler
+package com.noxapps.carpetScheduler.dataStructures
 
 import com.varabyte.kobweb.compose.ui.graphics.Color
 
 
-class JobObject (
+class ConciseJobObject (
     val title:String,
     val size:Int,
-    val data:String
+    //val data:String
 ){
     fun weight():Float{
         return when(true){
@@ -29,4 +29,5 @@ class JobObject (
     fun height(size:Int =this.weight().toInt() ):Int {
         return ((size*25)+(4*(size-1)))
     }
+    constructor(job:TrueJobObject) : this(title = job.jobDetails.invoiceNumber,size = job.size())
 }

@@ -1,15 +1,14 @@
-package Forum
+package com.noxapps.carpetScheduler.forum
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.varabyte.kobweb.compose.foundation.layout.*
+import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.silk.components.forms.Button
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
 
 open class ForumSheet(val pageState: MutableIntState) {
@@ -18,6 +17,10 @@ open class ForumSheet(val pageState: MutableIntState) {
     open val showPreviousButton = true
     open val enableNextButton = true
     open val showNextButton = true
+
+    var displayErrorFlag = mutableStateOf(false)
+
+    var errorStates = (0..10).map{false}.toMutableStateList()
 
     open fun previousButtonOnClick(
     ){
@@ -33,44 +36,41 @@ open class ForumSheet(val pageState: MutableIntState) {
 
     @Composable
     fun Sheet() {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-
+                .padding(24.px)
+                .overflow(Overflow.Auto, Overflow.Auto)
         ) {
+            content()
 
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                content()
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                if (showPreviousButton) {
-                    Button(
-                        enabled = enablePreviousButton,
-                        onClick = { previousButtonOnClick() },
-                        modifier = Modifier
-                            .padding(24.dp)
-                    ) {
-                        Text("Previous")
-                    }
+        }
+        Spacer()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.px)
+        ) {
+            if (showPreviousButton) {
+                Button(
+                    enabled = enablePreviousButton,
+                    onClick = { previousButtonOnClick() },
+                    modifier = Modifier
+                ) {
+                    Text("Previous")
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                if(showNextButton) {
-                    Button(
-                        enabled = enableNextButton,
-                        onClick = { nextButtonOnClick() },
-                        modifier = Modifier
-                            .padding(24.dp)
-                    ) {
-                        Text("Next")
-                    }
+            }
+            Spacer()
+            if(showNextButton) {
+                Button(
+                    enabled = enableNextButton,
+                    onClick = { nextButtonOnClick() },
+                    modifier = Modifier
+                ) {
+                    Text("Next")
                 }
             }
         }
     }
 }
+

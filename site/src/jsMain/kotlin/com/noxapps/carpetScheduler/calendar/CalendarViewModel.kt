@@ -1,21 +1,36 @@
 package com.noxapps.carpetScheduler.calendar
 
 
-import com.noxapps.carpetScheduler.JobObject
+import com.noxapps.carpetScheduler.dataStructures.ConciseJobObject
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseApp
+import dev.gitlive.firebase.FirebaseOptions
+import dev.gitlive.firebase.database.database
+import dev.gitlive.firebase.initialize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlin.random.Random
 
 
-class CalendarViewModel {
+class CalendarViewModel(val coroutineScope:CoroutineScope, app:FirebaseApp) {
     val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
-    var currentMonth = today.month
-    var currentDay = today.dayOfMonth
-    var currentYear =today.year
+    var todayMonth = today.month
+    var todayDay = today.dayOfMonth
+    var todayYear =today.year
 
 
-    var currentMonthCalendar = monthArray(currentMonth.number)
+    var currentMonthCalendar = monthArray(todayMonth.number)
+
+    val database = Firebase.database(app).reference()
+
+
 
     fun monthArray(month:Int, year:Int =Clock.System.todayIn(TimeZone.currentSystemDefault()).year):List<List<Int>>{
         val firstDay = LocalDate(year, month, 1).dayOfWeek
@@ -95,13 +110,49 @@ class CalendarViewModel {
         calendar.value = monthArray(month.value.number, year = year.value)
     }
 
-    fun getJobsByDay(day:Int):List<JobObject>{
+    fun getMonthsJobs(month: Int, year: Int, target:MutableList<TrueJobObject>, flag:MutableState<Boolean>) {
+        println("pull started, key flag value: ${flag.value}")
+        coroutineScope.launch {
+            val jobs = database.child("Jobs").orderByChild("schedule/month").equalTo(month.toDouble())
+                .valueEvents.first().children
+
+
+            jobs.forEach {
+                val job = it.value(TrueJobObject.serializer())
+                println("job: $job")
+                if (job.schedule.year==year){
+                    MainScope().launch { target.add(job) }
+                }
+            }
+            MainScope().launch {
+                println("pull finished key flag value: ${flag.value}")
+                flag.value=true
+            }
+
+        }
+        //flag.value = true
+
+    }
+
+    fun getJobsByDay(day:Int, source:MutableList<TrueJobObject>):List<ConciseJobObject>{
+        val returnList = mutableListOf<ConciseJobObject>()
+
+
+        source.forEach {
+            if(it.schedule.day==day){
+                returnList.add(ConciseJobObject(it))
+            }
+        }
+        return returnList
+    }
+
+    fun getRandomJobsByDay(day:Int):List<ConciseJobObject>{
         // TODO: this
-        val job1U = JobObject("test 1", 3, "a")
-        val job2U = JobObject("test 2", 6, "a")
-        val job3U = JobObject("test 3", 9, "a")
-        val job4U = JobObject("test 4", 12, "a")
-        val returnList = mutableListOf<JobObject>()
+        val job1U = ConciseJobObject("test 1", 3)
+        val job2U = ConciseJobObject("test 2", 6)
+        val job3U = ConciseJobObject("test 3", 9)
+        val job4U = ConciseJobObject("test 4", 12)
+        val returnList = mutableListOf<ConciseJobObject>()
         var round = 0
         var total = 0
         while (round<6&&total<13){
@@ -141,4 +192,5 @@ class CalendarViewModel {
         }
         return returnList
     }
+
 }

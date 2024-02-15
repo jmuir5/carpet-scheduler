@@ -1,25 +1,33 @@
 package com.noxapps.carpetScheduler.pages
 
-import Forum.Forum
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
-import Calendar.CalendarPage
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import com.varabyte.kobweb.core.Page
+import com.noxapps.carpetScheduler.navigation.FauxNavController
+import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 
-@OptIn(ExperimentalResourceApi::class)
+@Page
 @Composable
 fun App() {
-    MaterialTheme {
-        val forumState = remember { mutableStateOf(true) }
-        val calendarState = remember{mutableStateOf(false)}
-        val currentJob = remember{mutableStateOf(false)}
-        if (forumState.value){
+    val navController = FauxNavController()
+
+
+
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+    ) {
+        navController.screen()
+        /*
+        if (forumState.value) {
             Forum(forumState, currentJob)
-        }
-        else {
-            CalendarPage(forumState, currentJob)
+        } else {
+            CalendarPage(forumState, currentJob, coroutineScope)
         }
 
-
+         */
     }
 }
+
+

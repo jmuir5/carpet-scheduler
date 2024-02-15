@@ -1,40 +1,38 @@
-package Forum
+package com.noxapps.carpetScheduler.pages
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.varabyte.kobweb.compose.foundation.layout.*
+import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.toAttrs
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.H1
+import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun Header(text:String){
-    Column {
-        Spacer(modifier = Modifier
-            .height(1.dp)
+    Row(
+        modifier= Modifier
             .fillMaxWidth()
-            .background(color = Color.Gray)
-        )
-        Row(
-            modifier= Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.primary)
-                .padding(24.dp)
+            .background(Color.rgb(176, 99, 224))
+            .padding(10.px,24.px,10.px,24.px)
+            .border{
+                color(Color.rgb(179, 179, 179))
+                style(bottom = LineStyle.Solid)
+                width(2.px)
+            }
+            .flex(0, 0)
 
-        ){
+    ){
+        H1 (attrs = Modifier
+            .margin(0.px)
+            .toAttrs()) {
             Text(
-                text = text,
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h4,
-                modifier= Modifier
+                value = text
             )
         }
-        Spacer(modifier = Modifier
-            .height(1.dp)
-            .fillMaxWidth()
-            .background(color = Color.Gray)
-        )
     }
+
 }
