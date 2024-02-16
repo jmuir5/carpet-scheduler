@@ -13,7 +13,7 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import org.jetbrains.compose.web.dom.Text
 
-@Page
+@Page("index")
 @Composable
 fun HomePage() {
     // TODO: Replace the following with your own content
