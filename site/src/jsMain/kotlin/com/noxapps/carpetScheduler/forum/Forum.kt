@@ -26,16 +26,26 @@ fun Forum(jobHolder:MutableState<TrueJobObject>, app:FirebaseApp, navController:
         .fillMaxWidth()
         .height(window.innerHeight.px)
         .background(Colors.DarkGray)
+        .justifyContent(JustifyContent.Center)
     ) {
-        Spacer()
         Column(
             modifier = Modifier
                 .height(window.innerHeight.px)
-                .width((70.percent))
+                .minWidth(50.percent)
                 .display(DisplayStyle.Flex)
                 .flexDirection(FlexDirection.Column)
                 .background(Colors.LightGrey)
         ) {
+            Row (modifier = Modifier
+                .fillMaxWidth()){
+                com.varabyte.kobweb.silk.components.forms.Button(
+                    onClick = {navController.navigateTo("Preview")},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ){
+                    Text("Preview Calendar")
+                }
+            }
             Header("Core Information")
             if (pageState.value==0){
                 sheet1(pageState, jobHolder, app).Sheet()
@@ -50,20 +60,6 @@ fun Forum(jobHolder:MutableState<TrueJobObject>, app:FirebaseApp, navController:
             }
 
         }
-        Column(modifier = Modifier
-            .height(window.innerHeight.px)
-            .width((15.percent))
-        ){
-            com.varabyte.kobweb.silk.components.forms.Button(
-                onClick = {navController.navigateTo("Preview")},
-                modifier = Modifier
-                    .fillMaxWidth()
-            ){
-                Text("Preview Calendar")
-            }
-            Spacer()
-        }
-
     }
     if(pageState.value>2){
         pageState.value = 0

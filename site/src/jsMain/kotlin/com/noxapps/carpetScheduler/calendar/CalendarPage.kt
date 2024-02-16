@@ -210,6 +210,7 @@ fun CalendarPage(
             feedbackDialogueState = feedbackFlag,
             navController = navController){
             val uniqueID = currentJob.value.jobDetails.invoiceNumber + Clock.System.now().epochSeconds.toString()
+            currentJob.value.id = uniqueID
             coroutineScope.launch {
                 viewModel.database.child("Jobs").child(uniqueID).setValue(currentJob.value)
             }

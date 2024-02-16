@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TrueJobObject (
+    var id:String = "",
     var schedule:DateObject = DateObject(),
     var agent:BookingAgent = BookingAgent(),
     var client:ClientObject = ClientObject(),
