@@ -9,6 +9,7 @@ import com.noxapps.carpetScheduler.calendar.dialogues.SaturdayDialogue
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.noxapps.carpetScheduler.dataStructures.DateObject
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
+import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.navigation.FauxNavController
 import com.varabyte.kobweb.compose.css.Height
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -17,6 +18,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.attrsModifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaArrowLeft
@@ -38,6 +40,7 @@ fun CalendarPage(
     currentJob: MutableState<TrueJobObject>,
     coroutineScope: CoroutineScope,
     app:FirebaseApp,
+    user: User,
     navController: FauxNavController,
     previewFlag:Boolean=false,
     viewModel: CalendarViewModel = CalendarViewModel(coroutineScope, app)
@@ -53,7 +56,7 @@ fun CalendarPage(
     var loadAttempted by remember{mutableStateOf(false)}
 
     val activeMonthLoadedFlag = remember {mutableStateOf(false)}
-    var activeMonthsJobs = remember{mutableListOf<TrueJobObject>()}
+    val activeMonthsJobs = remember{mutableListOf<TrueJobObject>()}
 
 
     println("page loaded")
@@ -81,11 +84,13 @@ fun CalendarPage(
                 .height(Height.FitContent)
                 .padding(24.px)
                 .justifyContent(JustifyContent.Center)
+                .background(Color.argb(0.2f, 169, 169, 169))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Height.FitContent)
+                    .background(Colors.White)
                     .border(2.px, LineStyle.Solid, Color.rgb(0, 0, 0))
             ) {
                 Row(
@@ -93,6 +98,7 @@ fun CalendarPage(
                         .width(((100f / 7)) * 7.percent)
                         .height(Height.FitContent)
                         .background(Color.rgb(255, 255, 255))
+                        .padding(0.px,  10.px)
                         .border(1.px, LineStyle.Solid, Color.rgb(0, 0, 0)
                         )
 

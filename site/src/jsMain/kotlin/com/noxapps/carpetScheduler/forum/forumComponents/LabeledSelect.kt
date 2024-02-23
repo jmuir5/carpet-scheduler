@@ -2,6 +2,7 @@ package com.noxapps.carpetScheduler.forum.forumComponents
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.JustifyContent
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -40,6 +41,8 @@ fun labeledSelect(
     ) {
         P(
             attrs = Modifier
+                .fontWeight(FontWeight.Bold)
+
                 //.width(50.percent)
                 .align(Alignment.CenterVertically)
                 .toAttrs()

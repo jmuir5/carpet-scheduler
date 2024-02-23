@@ -4,8 +4,12 @@ class Routes() {
     val forumPage = "Forum"
     val calendarPage = "Calendar"
     val previewCal = "Preview"
+    val login = "Login"
+    val adminPanel = "Admin"
+    val techPanel = "Tech"
+    val shopPanel = "Shop"
+    val jobPage = "Job"
 
-    fun contains(s:String):Boolean{
-        return s==forumPage||s==calendarPage||s==previewCal
-    }
+    val routes = listOf(forumPage, calendarPage, previewCal, login, adminPanel, shopPanel, techPanel, jobPage)
+
 }

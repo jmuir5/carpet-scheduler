@@ -89,6 +89,25 @@ fun BookingReviewDialogue(
                         //.align(Alignment.CenterHorizontally)
                         .toAttrs()
                 ) {
+                    Text("Shop:")
+                }
+                Ul(
+                    attrs = Modifier
+                        //.margin(0.px,0.px,0.px,0.px)
+                        //.align(Alignment.CenterHorizontally)
+                        .toAttrs()
+                ) {
+                    Li { Text("Name: ${jobObject.agent.organisation.name}") }
+                    Li { Text("Phone: ${jobObject.agent.organisation.phone}") }
+                    Li { Text("Address: ${jobObject.agent.organisation.address}") }
+                    //Li { Text("Agent phone number: ${jobObject.agent.phone}") }
+                }
+                H4(
+                    attrs = Modifier
+                        //.margin(0.px,0.px,0.px,0.px)
+                        //.align(Alignment.CenterHorizontally)
+                        .toAttrs()
+                ) {
                     Text("Booking Agent:")
                 }
                 Ul(
@@ -97,9 +116,8 @@ fun BookingReviewDialogue(
                         //.align(Alignment.CenterHorizontally)
                         .toAttrs()
                 ) {
-                    Li { Text("Company: ${jobObject.agent.company}") }
-                    jobObject.agent.branch?.let { Li { Text("Branch: ${it}") } }
-                    //Li { Text("Booking Agent: ${jobObject.agent.agent}") }
+                    Li { Text("Name: ${jobObject.agent.name} ${jobObject.agent.surname}") }
+                    Li { Text("Phone: ${jobObject.agent.phone}") }
                     //Li { Text("Agent phone number: ${jobObject.agent.phone}") }
                 }
                 H4(

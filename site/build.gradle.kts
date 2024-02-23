@@ -36,6 +36,7 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation("dev.gitlive:firebase-database:1.11.1")
             implementation("dev.gitlive:firebase-storage:1.11.1")
+            implementation("dev.gitlive:firebase-auth:1.11.1")
 
 
 

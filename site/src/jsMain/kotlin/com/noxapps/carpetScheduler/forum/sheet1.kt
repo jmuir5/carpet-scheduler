@@ -7,6 +7,7 @@ import com.noxapps.carpetScheduler.dataStructures.BookingAgent
 import com.noxapps.carpetScheduler.dataStructures.ClientObject
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.forum.forumComponents.labeledFileSelect
+import com.noxapps.carpetScheduler.forum.forumComponents.labeledString
 import com.noxapps.carpetScheduler.forum.forumComponents.labeledTextInput
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -34,9 +35,7 @@ class sheet1(
     override val enablePreviousButton = false
     override val showPreviousButton = false
 
-    private var shopName = mutableStateOf(jobHolder.value.agent.company)
     private var invoiceNumber = mutableStateOf(jobHolder.value.jobDetails.invoiceNumber)
-    private var carpetName = mutableStateOf(jobHolder.value.jobDetails.carpetId)
     private var clientName = mutableStateOf(jobHolder.value.client.name)
     private var clientNumber = mutableStateOf(jobHolder.value.client.phone)
     private var clientAddress = mutableStateOf(jobHolder.value.client.address)
@@ -46,11 +45,7 @@ class sheet1(
 
 
     fun validate():Boolean{
-        errorStates[0] = shopName.value.isEmpty()
-
-        errorStates[1] = invoiceNumber.value.isEmpty()
-
-        errorStates[2] = carpetName.value.isEmpty()
+        errorStates[0] = invoiceNumber.value.isEmpty()
 
         errorStates[3] = clientName.value.isEmpty()
 
@@ -72,15 +67,13 @@ class sheet1(
     override fun nextButtonOnClick() {
         if(validate()) {
             println("validate passed")
+            jobHolder.value.jobDetails.invoiceNumber = invoiceNumber.value
 
-            jobHolder.value.agent = BookingAgent(company = shopName.value)
             jobHolder.value.client = ClientObject(
                 name = clientName.value,
                 phone = clientNumber.value,
                 address = clientAddress.value
             )
-            jobHolder.value.jobDetails.invoiceNumber = invoiceNumber.value
-            jobHolder.value.jobDetails.carpetId = carpetName.value
             super.nextButtonOnClick()
         }
         else displayErrorFlag.value =true
@@ -111,15 +104,30 @@ class sheet1(
                     .fillMaxWidth()
                     .padding(0.px,32.px,0.px,32.px)
             ) {
-                labeledTextInput("Name, Branch:", shopName, errorStates[0])
-                labeledTextInput("Invoice/Order Number:", invoiceNumber,errorStates[1])
+                labeledString("Name:", jobHolder.value.agent.organisation.name)
+                labeledString("Phone:", jobHolder.value.agent.organisation.phone)
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.px,32.px,0.px,32.px)
             ) {
-                labeledTextInput("Material/Carpet Name:", carpetName, errorStates[2])
+                labeledString("Address:", jobHolder.value.agent.organisation.address)
             }
+            H2(attrs = Modifier
+                .margin(0.px,0.px,0.px,0.px)
+                .toAttrs()
+            ){
+                Text("Agent:")
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.px,32.px,0.px,32.px)
+            ) {
+                labeledString("Name:", "${jobHolder.value.agent.name} ${jobHolder.value.agent.surname}")
+                labeledString("Phone:", jobHolder.value.agent.phone)
+            }
+
             //text input /dropdown?
             H2(attrs = Modifier
                 .margin(12.px,0.px,0.px,0.px)
@@ -141,6 +149,8 @@ class sheet1(
             ) {
                 labeledTextInput("Address:", clientAddress, errorStates[5])
             }
+
+            labeledTextInput("Invoice number:", invoiceNumber, errorStates[0])
             H2(attrs = Modifier
                 .margin(12.px,0.px,0.px,0.px)
                 .toAttrs()){
@@ -176,9 +186,9 @@ class sheet1(
                     //.align(Alignment.CenterHorizontally)
                     .toAttrs()
             ) {
-                if(errorStates[0])Li { Text("Please enter your shop name") }
-                if(errorStates[1])Li { Text("Please enter the invoice number for this job") }
-                if(errorStates[2])Li { Text("Please enter the name of this carpet") }
+                if(errorStates[0])Li { Text("Please enter the invoice number for this job") }
+                if(errorStates[1])Li { Text("") }
+                if(errorStates[2])Li { Text("") }
                 if(errorStates[3])Li { Text("Please enter name of the client") }
                 if(errorStates[4])Li { Text("Please enter the client's phone number") }
                 if(errorStates[5])Li { Text("Please enter the client's address") }

@@ -1,4 +1,4 @@
-package com.noxapps.carpetScheduler.pages.carpetScheduler
+package com.noxapps.carpetScheduler.pages
 
 import androidx.compose.runtime.*
 import com.noxapps.carpetScheduler.navigation.FauxNavController
@@ -16,7 +16,6 @@ import org.jetbrains.compose.web.dom.Text
 @Page("index")
 @Composable
 fun HomePage() {
-    // TODO: Replace the following with your own content
     val navController = FauxNavController()
 
 

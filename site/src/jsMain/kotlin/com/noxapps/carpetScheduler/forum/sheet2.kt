@@ -20,6 +20,9 @@ import org.jetbrains.compose.web.dom.*
 
 
 class sheet2(pageState: MutableIntState, val jobHolder:MutableState<TrueJobObject>) : ForumSheet(pageState) {
+
+    private var carpetName = mutableStateOf(jobHolder.value.jobDetails.carpetId)
+
     private var meterage = mutableStateOf(jobHolder.value.jobDetails.meterage.toString())//
     private var takeup = mutableStateOf(jobHolder.value.jobDetails.takeup)//
     private var furniture = mutableStateOf(jobHolder.value.jobDetails.furniture)//
@@ -82,6 +85,10 @@ class sheet2(pageState: MutableIntState, val jobHolder:MutableState<TrueJobObjec
         }
         else errorStates[6] = false
 
+        errorStates[7] = carpetName.value.isEmpty()
+
+
+
 
         return !errorStates.contains(true)
     }
@@ -89,10 +96,10 @@ class sheet2(pageState: MutableIntState, val jobHolder:MutableState<TrueJobObjec
     override fun nextButtonOnClick() {
         if(validate()) {
             val invHolder = jobHolder.value.jobDetails.invoiceNumber
-            val cptIdHolder = jobHolder.value.jobDetails.carpetId
+
             jobHolder.value.jobDetails = JobDetails(
                 invoiceNumber = invHolder,
-                carpetId = cptIdHolder,
+                carpetId = carpetName.value,
                 meterage = meterage.value.toFloat(),
                 takeup = takeup.value,
                 furniture = furniture.value,
@@ -131,6 +138,8 @@ class sheet2(pageState: MutableIntState, val jobHolder:MutableState<TrueJobObjec
             if(displayErrorFlag.value){
                 displayError(errorStates)
             }
+            labeledTextInput("Carpet Name:", carpetName, errorStates[7])
+
             labeledTextInput("Meterage:", meterage, errorStates[0])
 
             Row(modifier = Modifier
@@ -235,7 +244,7 @@ class sheet2(pageState: MutableIntState, val jobHolder:MutableState<TrueJobObjec
                 if(errorStates[4]) Li { Text("Please select a value for access") }
                 if(errorStates[5]) Li { Text("Please enter access details") }
                 if(errorStates[6]) Li { Text("Please enter trim details") }
-                if(errorStates[7]) Li { Text("") }
+                if(errorStates[7]) Li { Text("Please enter the name of this carpet") }
                 if(errorStates[8]) Li { Text("") }
                 if(errorStates[9]) Li { Text("") }
             }

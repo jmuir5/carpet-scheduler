@@ -3,6 +3,7 @@ package com.noxapps.carpetScheduler.forum.forumComponents
 
 import androidx.compose.runtime.*
 import com.noxapps.carpetScheduler.dataStructures.FileRefObject
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.JustifyContent
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -66,6 +67,7 @@ fun labeledFileSelect(
         P(
             attrs = Modifier
                 //.width(50.percent)
+                .fontWeight(FontWeight.Bold)
                 //.padding(6.px)
                 .margin(4.px,0.px)
                 //.align(Alignment.CenterVertically)

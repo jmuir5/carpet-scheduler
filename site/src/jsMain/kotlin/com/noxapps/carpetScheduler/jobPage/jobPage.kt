@@ -1,37 +1,40 @@
-package com.noxapps.carpetScheduler.pages.carpetScheduler
+package com.noxapps.carpetScheduler.jobPage
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.noxapps.carpetScheduler.reader.JobViewModel
+import com.noxapps.carpetScheduler.navigation.FauxNavController
+import com.varabyte.kobweb.compose.css.Height
 import com.varabyte.kobweb.compose.css.JustifyContent
-import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
-import kotlinx.browser.window
+import com.varabyte.kobweb.silk.components.icons.fa.FaArrowLeft
+import dev.gitlive.firebase.FirebaseApp
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.times
 import org.jetbrains.compose.web.dom.*
 
-@Page(routeOverride = "job/{jobId}")
 @Composable
 fun jobPage(
-    jobId:String = rememberPageContext().route.params.getValue("jobId"),
-    viewModel: JobViewModel = JobViewModel(jobId, rememberCoroutineScope())
+    jobId:String,
+    navController: FauxNavController,
+    app: FirebaseApp,
+    viewModel: JobViewModel = JobViewModel(jobId,app, navController, rememberCoroutineScope())
 ) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier
         .fillMaxWidth()
         .justifyContent(JustifyContent.Center)
+        .background(Color.argb(0.2f, 169, 169, 169))
     ) {
         Column(
             modifier = Modifier
@@ -46,13 +49,38 @@ fun jobPage(
                 .zIndex(1002)
 
         ) {
-            H2(
-                attrs = Modifier
-                    .margin(0.px, 0.px, 0.px, 0.px)
-                    .align(Alignment.CenterHorizontally)
-                    .toAttrs()
+            Row(
+                modifier = Modifier
+                    .width(100.percent)
+                    .height(Height.FitContent)
+                    .justifyContent(JustifyContent.SpaceBetween)
             ) {
-                Text("Job Information")
+                com.varabyte.kobweb.silk.components.forms.Button(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .width(15.percent)
+                ) {
+                    Text("Back")
+                }
+
+                H2(
+                    attrs = Modifier
+                        .margin(0.px, 0.px, 0.px, 0.px)
+                        .align(Alignment.CenterVertically)
+                        .toAttrs()
+                ) {
+                    Text("Job Information")
+                }
+                P(attrs = Modifier
+                    .width(15.percent)
+                    .color(Colors.Transparent)
+                    .toAttrs()
+                ) {
+                    Text("x")
+                }
             }
             P(
                 attrs = Modifier
@@ -77,6 +105,25 @@ fun jobPage(
                     //.align(Alignment.CenterHorizontally)
                     .toAttrs()
             ) {
+                Text("Shop:")
+            }
+            Ul(
+                attrs = Modifier
+                    //.margin(0.px,0.px,0.px,0.px)
+                    //.align(Alignment.CenterHorizontally)
+                    .toAttrs()
+            ) {
+                Li { Text("Name: ${viewModel.thisJob.value.agent.organisation.name}") }
+                Li { Text("Phone: ${viewModel.thisJob.value.agent.organisation.phone}") }
+                Li { Text("Address: ${viewModel.thisJob.value.agent.organisation.address}") }
+                //Li { Text("Agent phone number: ${jobObject.agent.phone}") }
+            }
+            H4(
+                attrs = Modifier
+                    //.margin(0.px,0.px,0.px,0.px)
+                    //.align(Alignment.CenterHorizontally)
+                    .toAttrs()
+            ) {
                 Text("Booking Agent:")
             }
             Ul(
@@ -85,10 +132,9 @@ fun jobPage(
                     //.align(Alignment.CenterHorizontally)
                     .toAttrs()
             ) {
-                Li { Text("Company: ${viewModel.thisJob.value.agent.company}") }
-                viewModel.thisJob.value.agent.branch?.let { Li { Text("Branch: ${it}") } }
-                //Li { Text("Booking Agent: ${viewModel.thisJob.value.agent.agent}") }
-                //Li { Text("Agent phone number: ${viewModel.thisJob.value.agent.phone}") }
+                Li { Text("Name: ${viewModel.thisJob.value.agent.name} ${viewModel.thisJob.value.agent.surname}") }
+                Li { Text("Phone: ${viewModel.thisJob.value.agent.phone}") }
+                //Li { Text("Agent phone number: ${jobObject.agent.phone}") }
             }
             H4(
                 attrs = Modifier
