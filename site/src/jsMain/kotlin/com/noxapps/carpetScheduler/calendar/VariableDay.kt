@@ -6,6 +6,8 @@ import androidx.compose.runtime.MutableState
 import com.noxapps.carpetScheduler.dataStructures.ConciseJobObject
 import com.noxapps.carpetScheduler.dataStructures.DateObject
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
+import com.noxapps.carpetScheduler.dataStructures.User
+import com.noxapps.carpetScheduler.navigation.FauxNavController
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
@@ -32,7 +34,9 @@ fun RowScope.Day(
     jobs:List<ConciseJobObject>,
     pendingJob: TrueJobObject,
     dialogueFlag: MutableState<Boolean>,
-    saturdayDialogueFlag: MutableState<Boolean>
+    saturdayDialogueFlag: MutableState<Boolean>,
+    user: User,
+    navController: FauxNavController
 
 ){
     var jobWeightTotal =0
@@ -109,7 +113,7 @@ fun RowScope.Day(
             .fillMaxWidth()
             //.height(Height.Inherit)
         ){
-            jobsBlock(jobs)
+            jobsBlock(jobs, user, navController)
         }
     }
 }

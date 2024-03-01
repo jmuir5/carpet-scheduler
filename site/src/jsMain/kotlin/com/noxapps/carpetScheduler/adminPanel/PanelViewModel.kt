@@ -2,11 +2,13 @@ package com.noxapps.carpetScheduler.adminPanel
 
 import androidx.compose.runtime.MutableState
 import com.noxapps.carpetScheduler.dataStructures.DateObject
+import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.navigation.FauxNavController
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
+import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.database.database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -20,7 +22,8 @@ import kotlinx.datetime.todayIn
 class PanelViewModel(
     val coroutineScope: CoroutineScope,
     val app: FirebaseApp,
-    val user: User,
+    val user: MutableState<User>,
+    val userOrg: MutableState<Organization>,
     val navController: FauxNavController
 ) {
     val database = Firebase.database(app).reference()
@@ -33,18 +36,24 @@ class PanelViewModel(
 
     var todayDateObject = DateObject(todayDay, todayMonth.number, todayYear)
 
+    val accountType = when(user.value.organisation){
+        "0"->"Admin"
+        "1"->"Tech"
+        else->"Shop"
+    }
+
 
 
 
     fun getJobs(target: List<MutableList<TrueJobObject>>, flag: MutableState<Boolean>){
         coroutineScope.launch {
-            val jobs = when(user.organisation.name){
-                "Administration",  "Carpet4U"->{
+            val jobs = when(user.value.organisation){
+                "0",  "1"->{
                     database.child("Jobs").orderByChild("schedule/month")
                         .valueEvents.first().children
                 }
                 else->{
-                    database.child("Jobs").orderByChild("agent/organisation/name").equalTo(user.organisation.name)
+                    database.child("Jobs").orderByChild("agent/organisation").equalTo(user.value.organisation)
                         .valueEvents.first().children
                 }
 
@@ -75,30 +84,6 @@ class PanelViewModel(
         }
     }
 
-
-    fun getMonthsJobs(month: Int, year: Int, target:MutableList<TrueJobObject>, flag: MutableState<Boolean>) {
-        println("pull started, key flag value: ${flag.value}")
-        coroutineScope.launch {
-            val jobs = database.child("Jobs").orderByChild("schedule/month").equalTo(month.toDouble())
-                .valueEvents.first().children
-
-
-            jobs.forEach {
-                val job = it.value(TrueJobObject.serializer())
-                println("job: $job")
-                if (job.schedule.year==year){
-                    MainScope().launch { target.add(job) }
-                }
-            }
-            MainScope().launch {
-                println("pull finished key flag value: ${flag.value}")
-                flag.value=true
-            }
-
-        }
-        //flag.value = true
-
-    }
 
     fun monthLength(month:Int, year:Int =Clock.System.todayIn(TimeZone.currentSystemDefault()).year):Int{
         return when(month){
@@ -139,6 +124,18 @@ class PanelViewModel(
             }
         }
         return false
+
+    }
+
+    fun signOut(){
+        coroutineScope.launch {
+            Firebase.auth(app).signOut()
+            MainScope().launch {
+                user.value = User()
+                userOrg.value = Organization()
+            }
+        }
+        navController.popBackStack()
 
     }
 }

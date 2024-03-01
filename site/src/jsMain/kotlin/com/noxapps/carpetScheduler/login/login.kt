@@ -1,6 +1,7 @@
 package com.noxapps.carpetScheduler.login
 
 import androidx.compose.runtime.*
+import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.login.components.styledInput
 import com.noxapps.carpetScheduler.navigation.FauxNavController
@@ -33,8 +34,9 @@ fun login(
     app:FirebaseApp,
     coroutineScope: CoroutineScope,
     loggedUser: MutableState<User>,
+    userOrg: MutableState<Organization>,
     navController: FauxNavController,
-    viewModel: LoginViewModel = LoginViewModel(app, coroutineScope, loggedUser, navController)
+    viewModel: LoginViewModel = LoginViewModel(app, coroutineScope, loggedUser, userOrg, navController)
 ) {
     var signUpState by remember { mutableStateOf(false) }
     val email = remember{ mutableStateOf("") }
@@ -67,7 +69,7 @@ fun login(
     //var passwordErrorState = remember{ mutableStateOf(false) }
     val errorMessage = remember{ mutableStateOf("") }
 
-    var actualWidth = 0
+    var actualWidth by remember { mutableStateOf(0) }
 
 
     Box(modifier = Modifier //conatiner
@@ -91,8 +93,9 @@ fun login(
         ) {
 
             Image(
-                src = "resources/public/logo.png",
+                src = "https://firebasestorage.googleapis.com/v0/b/muir-carpet-scheduler.appspot.com/o/Logo%2Fcarpet4u%20logo.bmp?alt=media&token=6c1cfe38-827f-4c8e-8e81-24bc95b2931e",
                 description = "placeholderLogo",
+                width = (actualWidth*0.75).toInt(),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
             )

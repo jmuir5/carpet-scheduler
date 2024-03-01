@@ -3,36 +3,32 @@ package com.noxapps.carpetScheduler.login
 import androidx.compose.runtime.MutableState
 import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.User
+import com.noxapps.carpetScheduler.generics.getOrgFromId
 import com.noxapps.carpetScheduler.navigation.FauxNavController
 import com.noxapps.carpetScheduler.navigation.Routes
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
-import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.EmailAuthProvider
-import dev.gitlive.firebase.auth.FirebaseAuthEmailException
 import dev.gitlive.firebase.auth.auth
-import dev.gitlive.firebase.auth.externals.AuthProvider
 import dev.gitlive.firebase.database.database
-import kotlinx.browser.document
-import kotlinx.browser.localStorage
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
-import org.jetbrains.compose.web.css.CSSUnit
-import org.jetbrains.compose.web.dom.Main
 
 class LoginViewModel(
     val app: FirebaseApp,
     private val coroutineScope: CoroutineScope,
     private val loggedUser:MutableState<User>,
+    private val userOrg:MutableState<Organization>,
     private val navController: FauxNavController
 ) {
     val auth = Firebase.auth(app)
     private val database = Firebase.database(app).reference()
     val linkingCodes = mutableListOf<String>()
+    var adminId = ""
+    var techID = ""
 
 
 
@@ -63,39 +59,21 @@ class LoginViewModel(
                 val result = auth.signInWithCredential(credential)
                 MainScope().launch{
                     println("Credential id: ${result.js.credential?.providerId}")
-
                     println("Credential method: ${result.js.credential?.signInMethod}")
-                    //val testCredential = dev.gitlive.firebase.auth.externals.AuthCredential
 
-
-                    //val testCredential =
                 }
 
                 result.user?.uid?.let {
                     val received = database.child("Users").orderByKey().equalTo(it)
                         .valueEvents.first().children.first().value(User.serializer())
+                    val loggedOrg = getOrgFromId(database, received.organisation)
                     MainScope().launch {
                         loggedUser.value = received
-                        when (loggedUser.value.organisation.name) {
-                            "Administration" -> {
-                                navController.navigateTo(Routes().adminPanel)
-                            }
+                        userOrg.value = loggedOrg
+                        navController.navigateTo(Routes().userPanel)
 
-                            "Carpet4U" -> {
-                                navController.navigateTo(Routes().techPanel)
-                            }
-
-                            else -> navController.navigateTo(Routes().shopPanel)
-                        }
                     }
 
-                }
-                MainScope().launch {
-                    println(result.user?.toString())
-                    println(result.user.toString())
-                    println(result.user?.uid)
-                    println(result.user?.email)
-                    println(result.user?.displayName)
                 }
             }
             catch (e:Exception){
@@ -131,22 +109,14 @@ class LoginViewModel(
                 val result = auth.createUserWithEmailAndPassword(email, password)
 
                 result.user?.sendEmailVerification()
-                val org = getOrganisation(linkingCode)
+                val org = getOrgIdFromCode(linkingCode)
                 val user = User(UUID = result.user!!.uid, org, firstName, lastName, phoneNumber)
+                val loggedOrg = getOrgFromId(database, org)
                 database.child("Users").child(user.UUID).setValue(user)
                 loggedUser.value = user
+                userOrg.value = loggedOrg
+                navController.navigateTo(Routes().userPanel)
 
-                when (loggedUser.value.organisation.name) {
-                    "Administration" -> {
-                        navController.navigateTo(Routes().adminPanel)
-                    }
-
-                    "Carpet4U" -> {
-                        navController.navigateTo(Routes().techPanel)
-                    }
-
-                    else -> navController.navigateTo(Routes().shopPanel)
-                }
             }
             catch (e:Exception){
                 errorState.value=true
@@ -171,24 +141,30 @@ class LoginViewModel(
             try {
                 database.child("Orgs").orderByKey()
                     .valueEvents.first().children.forEach {
+                        val org = it.value(Organization.serializer())
                         MainScope().launch{
-                            it.key?.let { it1 -> linkingCodes.add(it1) }
+                            linkingCodes.add(org.code)
                         }
+                        if(org.name=="Administration") adminId=org.id
+                        if(org.name=="Carpet4U") techID=org.id
                     }
+
+
             } catch (_: Error) {
             }
         }
 
     }
 
-    suspend fun getOrganisation(code:String):Organization{
+    suspend fun getOrgIdFromCode(code:String):String{
         return try {
-            database.child("Orgs").orderByKey().equalTo(code)
-                .valueEvents.first().children.firstOrNull()?.value(Organization.serializer())?:Organization()
+            database.child("Orgs").orderByChild("code").equalTo(code)
+                .valueEvents.first().children.firstOrNull()?.value(Organization.serializer())?.id?:""
         } catch (_: Error) {
-            Organization()
+            ""
         }
     }
+
 
 
 

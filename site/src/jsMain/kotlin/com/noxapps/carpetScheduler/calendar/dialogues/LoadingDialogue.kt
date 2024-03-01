@@ -3,6 +3,7 @@ package com.noxapps.carpetScheduler.calendar.dialogues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
+import com.noxapps.carpetScheduler.generics.alertDialogue
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -21,31 +22,13 @@ import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun LoadingDialogue(){
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .minHeight(document.body?.scrollHeight?.px?:100.percent)//100.percent)
-        .position(Position.Absolute)
-        .background(Color.argb(0.5f, 169, 169, 169))
-        .zIndex(1001)
-    ) {
-        Column(modifier = Modifier
-            .width(50.percent)
-            .align(Alignment.Center)
-            .border(
-                2.px,
-                LineStyle.Solid,
-                Colors.Black
-            )
-            .background(Colors.White)
-            .padding(10.px)
-            .zIndex(1002)
+    alertDialogue {
+        H3(attrs = Modifier
+            .align(Alignment.CenterHorizontally)
+            .toAttrs()
         ) {
-            H3(attrs = Modifier
-                .align(Alignment.CenterHorizontally)
-                .toAttrs()
-            ) {
-                Text("Loading Calendar - Please Wait")
-            }
+            Text("Loading Calendar - Please Wait")
         }
+
     }
 }

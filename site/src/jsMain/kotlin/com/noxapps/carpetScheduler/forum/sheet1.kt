@@ -5,10 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import com.noxapps.carpetScheduler.dataStructures.BookingAgent
 import com.noxapps.carpetScheduler.dataStructures.ClientObject
+import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.forum.forumComponents.labeledFileSelect
 import com.noxapps.carpetScheduler.forum.forumComponents.labeledString
 import com.noxapps.carpetScheduler.forum.forumComponents.labeledTextInput
+import com.noxapps.carpetScheduler.generics.getOrgFromId
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -17,7 +19,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.forms.InputStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
+import dev.gitlive.firebase.database.database
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -30,6 +37,7 @@ import org.w3c.files.FileReader
 class sheet1(
     pageState: MutableIntState,
     private val jobHolder:MutableState<TrueJobObject>,
+    private val userOrg: Organization,
     private val app: FirebaseApp
 ) : ForumSheet(pageState) {
     override val enablePreviousButton = false
@@ -41,6 +49,7 @@ class sheet1(
     private var clientAddress = mutableStateOf(jobHolder.value.client.address)
     private var floorPlan = mutableStateOf(jobHolder.value.floorPlan)
     private var cutSheet = mutableStateOf(jobHolder.value.cutSheet)
+
 
 
 
@@ -58,8 +67,8 @@ class sheet1(
 
         errorStates[5] = clientAddress.value.isEmpty()
 
-        errorStates[6] = jobHolder.value.floorPlan.status!="Done"
-        errorStates[7] = jobHolder.value.cutSheet.status!="Done"
+        errorStates[6] = jobHolder.value.floorPlan.status=="Processing"
+        errorStates[7] = jobHolder.value.cutSheet.status=="Processing"
 
         return !errorStates.contains(true)
     }
@@ -104,14 +113,14 @@ class sheet1(
                     .fillMaxWidth()
                     .padding(0.px,32.px,0.px,32.px)
             ) {
-                labeledString("Name:", jobHolder.value.agent.organisation.name)
-                labeledString("Phone:", jobHolder.value.agent.organisation.phone)
+                labeledString("Name:", userOrg.name)
+                labeledString("Phone:", userOrg.phone)
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.px,32.px,0.px,32.px)
             ) {
-                labeledString("Address:", jobHolder.value.agent.organisation.address)
+                labeledString("Address:", userOrg.address)
             }
             H2(attrs = Modifier
                 .margin(0.px,0.px,0.px,0.px)

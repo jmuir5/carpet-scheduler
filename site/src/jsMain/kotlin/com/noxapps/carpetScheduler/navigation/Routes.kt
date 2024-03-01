@@ -5,11 +5,12 @@ class Routes() {
     val calendarPage = "Calendar"
     val previewCal = "Preview"
     val login = "Login"
-    val adminPanel = "Admin"
+    val userPanel = "Home"
     val techPanel = "Tech"
     val shopPanel = "Shop"
     val jobPage = "Job"
+    val manOrgsPage = "ManOrgs"
 
-    val routes = listOf(forumPage, calendarPage, previewCal, login, adminPanel, shopPanel, techPanel, jobPage)
+    val routes = listOf(forumPage, calendarPage, previewCal, login, userPanel, shopPanel, techPanel, jobPage, manOrgsPage)
 
 }

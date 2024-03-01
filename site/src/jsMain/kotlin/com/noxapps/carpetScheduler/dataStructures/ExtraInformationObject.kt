@@ -8,6 +8,7 @@ data class ExtraInformationObject(
     var smoothedge:Boolean = false,
     var waterDamage:Boolean =false,
     var dramas:String = "",
-    var additionalInfo:String = ""
+    var additionalInfo:String = "",
+    var images:List<FileRefObject> = listOf()
 ) {
 }

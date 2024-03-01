@@ -42,6 +42,7 @@ fun ColumnScope.styledInput(
             .toAttrs {
                 placeholder(placeholder)
                 onInput { valueHolder.value= it.value }
+                value(valueHolder.value)
                 attrsExtra()
                 if(processingState.value) disabled()
 

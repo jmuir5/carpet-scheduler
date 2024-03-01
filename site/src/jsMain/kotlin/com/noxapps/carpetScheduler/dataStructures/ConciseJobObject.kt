@@ -4,8 +4,11 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 
 
 class ConciseJobObject (
+    val id:String,
+    val organisation:String,
     val title:String,
     val size:Int,
+
     //val data:String
 ){
     fun weight():Float{
@@ -29,5 +32,10 @@ class ConciseJobObject (
     fun height(size:Int =this.weight().toInt() ):Int {
         return ((size*25)+(4*(size-1)))
     }
-    constructor(job:TrueJobObject) : this(title = job.jobDetails.invoiceNumber,size = job.size())
+    constructor(job:TrueJobObject) : this(
+        id = job.id,
+        organisation = job.agent.organisation,
+        title = job.jobDetails.invoiceNumber,
+        size = job.size()
+    )
 }

@@ -4,6 +4,9 @@ package com.noxapps.carpetScheduler.calendar
 import com.varabyte.kobweb.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import com.noxapps.carpetScheduler.dataStructures.ConciseJobObject
+import com.noxapps.carpetScheduler.dataStructures.User
+import com.noxapps.carpetScheduler.navigation.FauxNavController
+import com.noxapps.carpetScheduler.navigation.Routes
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -16,7 +19,7 @@ import org.jetbrains.compose.web.dom.Text
 
 
 @Composable
-fun ColumnScope.jobsBlock(jobs:List<ConciseJobObject>){
+fun ColumnScope.jobsBlock(jobs:List<ConciseJobObject>, user: User, navController:FauxNavController){
     var extraWeight =4f
     jobs.forEach {
         P(attrs = Modifier
@@ -26,10 +29,22 @@ fun ColumnScope.jobsBlock(jobs:List<ConciseJobObject>){
             .background(it.color())
             .height(it.height().px)
             .clip(shape = Rect(0,5.px))
+            .onClick {_->
+                if (it.organisation==user.organisation||user.organisation == "0"||user.organisation == "1") {
+                    navController.navigateTo(Routes().jobPage + "/${it.id}")
+                }
+            }
             .toAttrs()) {
-            Text(
-                value = it.title,
-            )
+            if (it.organisation==user.organisation||user.organisation == "0"||user.organisation == "1") {
+                Text(
+                    value = it.title,
+                )
+            }
+            else{
+                Text(
+                    value = "",
+                )
+            }
         }
         extraWeight-=it.weight()
     }

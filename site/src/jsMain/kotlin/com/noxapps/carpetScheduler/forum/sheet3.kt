@@ -7,24 +7,28 @@ import com.noxapps.carpetScheduler.dataStructures.BookingAgent
 import com.noxapps.carpetScheduler.dataStructures.ClientObject
 import com.noxapps.carpetScheduler.dataStructures.SubfloorObject
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
-import com.noxapps.carpetScheduler.forum.forumComponents.labeledCheckBox
-import com.noxapps.carpetScheduler.forum.forumComponents.labeledDetailsInput
-import com.noxapps.carpetScheduler.forum.forumComponents.labeledSelect
+import com.noxapps.carpetScheduler.forum.forumComponents.*
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import dev.gitlive.firebase.FirebaseApp
 import org.jetbrains.compose.web.dom.Option
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-class sheet3(pageState: MutableIntState, private val jobHolder:MutableState<TrueJobObject>) : ForumSheet(pageState) {
+class sheet3(
+    pageState: MutableIntState,
+    private val jobHolder:MutableState<TrueJobObject>,
+    private val app:FirebaseApp
+) : ForumSheet(pageState) {
     private var subfloor = mutableStateOf(jobHolder.value.extraInformationObject.subfloor.short)
     private var subfloorDetails = mutableStateOf(jobHolder.value.extraInformationObject.subfloor.details)
     private var smoothedge = mutableStateOf(jobHolder.value.extraInformationObject.smoothedge)
     private var waterDamage = mutableStateOf(jobHolder.value.extraInformationObject.waterDamage)
     private var dramas = mutableStateOf(jobHolder.value.extraInformationObject.dramas)
     private var extraInfo = mutableStateOf(jobHolder.value.extraInformationObject.additionalInfo)
+    private var images = jobHolder.value.extraInformationObject.images.toMutableStateList()
 
 
 
@@ -34,6 +38,7 @@ class sheet3(pageState: MutableIntState, private val jobHolder:MutableState<True
         jobHolder.value.extraInformationObject.waterDamage = waterDamage.value
         jobHolder.value.extraInformationObject.dramas = dramas.value
         jobHolder.value.extraInformationObject.additionalInfo = extraInfo.value
+        jobHolder.value.extraInformationObject.images = images.toList()
         super.nextButtonOnClick()
     }
 
@@ -62,6 +67,7 @@ class sheet3(pageState: MutableIntState, private val jobHolder:MutableState<True
             labeledDetailsInput("Previous Dramas?:", dramas, errorStates[2])
 
             labeledDetailsInput("Additional Information:", extraInfo, errorStates[2])
+            labeledMultiFileSelect("Images:", images,"Images", app, errorStates[7])
         }
     }
 }

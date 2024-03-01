@@ -1,11 +1,10 @@
 package com.noxapps.carpetScheduler.calendar
 
 
-import com.noxapps.carpetScheduler.dataStructures.ConciseJobObject
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.noxapps.carpetScheduler.dataStructures.DateObject
-import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
+import com.noxapps.carpetScheduler.dataStructures.*
+import com.noxapps.carpetScheduler.generics.getOrgFromId
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.FirebaseOptions
@@ -19,7 +18,13 @@ import kotlinx.datetime.*
 import kotlin.random.Random
 
 
-class CalendarViewModel(val coroutineScope:CoroutineScope, app:FirebaseApp) {
+class CalendarViewModel(
+    val coroutineScope:CoroutineScope,
+    val user: User,
+    val userOrg:Organization,
+
+    app:FirebaseApp)
+{
     val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
     var todayMonth = today.month
@@ -30,7 +35,6 @@ class CalendarViewModel(val coroutineScope:CoroutineScope, app:FirebaseApp) {
     var currentMonthCalendar = monthArray(todayMonth.number)
 
     val database = Firebase.database(app).reference()
-
 
 
     fun monthArray(month:Int, year:Int =Clock.System.todayIn(TimeZone.currentSystemDefault()).year):List<List<Int>>{
@@ -147,6 +151,7 @@ class CalendarViewModel(val coroutineScope:CoroutineScope, app:FirebaseApp) {
         return returnList
     }
 
+    /*
     fun getRandomJobsByDay(day:Int):List<ConciseJobObject>{
         // TODO: this
         val job1U = ConciseJobObject("test 1", 3)
@@ -192,7 +197,8 @@ class CalendarViewModel(val coroutineScope:CoroutineScope, app:FirebaseApp) {
             }
         }
         return returnList
-    }
+    }*/
+
 
 
 

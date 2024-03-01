@@ -1,10 +1,11 @@
 package com.noxapps.carpetScheduler.navigation
 
 import androidx.compose.runtime.*
-import com.noxapps.carpetScheduler.adminPanel.adminPanel
-import com.noxapps.carpetScheduler.adminPanel.shopPanel
-import com.noxapps.carpetScheduler.adminPanel.techPanel
-import com.noxapps.carpetScheduler.calendar.CalendarPage
+import com.noxapps.carpetScheduler.adminPanel.userPanel
+import com.noxapps.carpetScheduler.adminPanel.manageOrgsPage.manOrgsPage
+import com.noxapps.carpetScheduler.calendar.CalendarViewModel
+import com.noxapps.carpetScheduler.calendar.calendarPage
+import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.forum.Forum
@@ -40,28 +41,26 @@ class FauxNavController(){
         val emptyJob = remember{ mutableStateOf(TrueJobObject()) }
         val coroutineScope = rememberCoroutineScope()
         val loggedUser = remember{ mutableStateOf(User()) }
+        val userOrg = remember{ mutableStateOf(Organization()) }
 
         when (navStack.last()){
             Routes.forumPage-> {
-                Forum(currentJob,app, loggedUser.value, this)
+                Forum(currentJob,app, loggedUser.value,  userOrg.value, coroutineScope, this)
             }
             Routes.calendarPage-> {
-                CalendarPage(currentJob, coroutineScope, app, loggedUser.value, this)
+                calendarPage(currentJob,  this, false, CalendarViewModel(coroutineScope,  loggedUser.value, userOrg.value,app))
             }
             Routes.previewCal-> {
-                CalendarPage(emptyJob, coroutineScope, app, loggedUser.value,  this, true)
+                calendarPage(currentJob,  this, true, CalendarViewModel(coroutineScope,  loggedUser.value, userOrg.value,app))
             }
             Routes.login->{
-                login(app, coroutineScope, loggedUser, this)
+                login(app, coroutineScope, loggedUser, userOrg, this)
             }
-            Routes.adminPanel->{
-                adminPanel(coroutineScope, app, loggedUser.value, this)
+            Routes.userPanel->{
+                userPanel(coroutineScope, app, loggedUser, userOrg, this)
             }
-            Routes.shopPanel->{
-                shopPanel(coroutineScope, app, loggedUser.value, this)
-            }
-            Routes.techPanel->{
-                techPanel(coroutineScope, app, loggedUser.value, this)
+            Routes.manOrgsPage->{
+                manOrgsPage(app, coroutineScope, loggedUser.value,  this)
             }
             else-> {
                 if (useRegex(navStack.last())) {

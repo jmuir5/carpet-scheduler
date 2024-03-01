@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.navigation.FauxNavController
@@ -21,6 +22,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import dev.gitlive.firebase.FirebaseApp
 import kotlinx.browser.window
+import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.P
@@ -31,7 +33,10 @@ fun Forum(
     jobHolder:MutableState<TrueJobObject>,
     app:FirebaseApp,
     user: User,
-    navController: FauxNavController){//<JobObject>){
+    userOrg: Organization,
+    coroutineScope:CoroutineScope,
+    navController: FauxNavController
+){
     val pageState = remember{ mutableIntStateOf(0) }
     if (jobHolder.value.agent == User())jobHolder.value.agent =user
     Row(modifier = Modifier
@@ -83,7 +88,7 @@ fun Forum(
             }
             Header("Core Information")
             if (pageState.value==0){
-                sheet1(pageState, jobHolder, app).Sheet()
+                sheet1(pageState, jobHolder, userOrg, app).Sheet()
             }
             Header("Required Information")
             if (pageState.value==1){
@@ -91,7 +96,7 @@ fun Forum(
             }
             Header("Additional information")
             if (pageState.value==2){
-                sheet3(pageState, jobHolder).Sheet()
+                sheet3(pageState, jobHolder, app).Sheet()
             }
 
         }

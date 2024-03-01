@@ -8,6 +8,7 @@ import com.noxapps.carpetScheduler.calendar.dialogues.LoadingDialogue
 import com.noxapps.carpetScheduler.calendar.dialogues.SaturdayDialogue
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.noxapps.carpetScheduler.dataStructures.DateObject
+import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.navigation.FauxNavController
@@ -36,14 +37,12 @@ import kotlinx.datetime.*
 
 
 @Composable
-fun CalendarPage(
+fun calendarPage(
     currentJob: MutableState<TrueJobObject>,
-    coroutineScope: CoroutineScope,
-    app:FirebaseApp,
-    user: User,
     navController: FauxNavController,
     previewFlag:Boolean=false,
-    viewModel: CalendarViewModel = CalendarViewModel(coroutineScope, app)
+    viewModel: CalendarViewModel,
+    memeTest:Boolean = false
 ){
     val currentMonth = remember { mutableStateOf(viewModel.todayMonth) }
     val currentYear = remember{mutableStateOf(viewModel.todayYear)}
@@ -201,7 +200,9 @@ fun CalendarPage(
                                 viewModel.getJobsByDay(day, activeMonthsJobs),
                                 currentJob.value,
                                 dialogueFlag,
-                                saturdayDialogueFlag
+                                saturdayDialogueFlag,
+                                viewModel.user,
+                                navController,
                             )
                         }
                     }
@@ -212,12 +213,13 @@ fun CalendarPage(
     if(dialogueFlag.value){
         BookingReviewDialogue(
             jobObject = currentJob.value,
+            org = viewModel.userOrg,
             dialogueState = dialogueFlag,
             feedbackDialogueState = feedbackFlag,
             navController = navController){
             val uniqueID = currentJob.value.jobDetails.invoiceNumber + Clock.System.now().epochSeconds.toString()
             currentJob.value.id = uniqueID
-            coroutineScope.launch {
+            viewModel.coroutineScope.launch {
                 viewModel.database.child("Jobs").child(uniqueID).setValue(currentJob.value)
             }
         }
