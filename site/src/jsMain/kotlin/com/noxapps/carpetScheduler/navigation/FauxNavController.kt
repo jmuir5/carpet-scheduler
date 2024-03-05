@@ -4,7 +4,7 @@ import androidx.compose.runtime.*
 import com.noxapps.carpetScheduler.adminPanel.userPanel
 import com.noxapps.carpetScheduler.adminPanel.manageOrgsPage.manOrgsPage
 import com.noxapps.carpetScheduler.calendar.CalendarViewModel
-import com.noxapps.carpetScheduler.calendar.calendarPage
+import com.noxapps.carpetScheduler.calendar.calendarPageComposable
 import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.dataStructures.User
@@ -48,10 +48,10 @@ class FauxNavController(){
                 Forum(currentJob,app, loggedUser.value,  userOrg.value, coroutineScope, this)
             }
             Routes.calendarPage-> {
-                calendarPage(currentJob,  this, false, CalendarViewModel(coroutineScope,  loggedUser.value, userOrg.value,app))
+                calendarPageComposable(currentJob,  this, false, CalendarViewModel(coroutineScope,  loggedUser.value, userOrg.value,app))
             }
             Routes.previewCal-> {
-                calendarPage(currentJob,  this, true, CalendarViewModel(coroutineScope,  loggedUser.value, userOrg.value,app))
+                calendarPageComposable(currentJob,  this, true, CalendarViewModel(coroutineScope,  loggedUser.value, userOrg.value,app))
             }
             Routes.login->{
                 login(app, coroutineScope, loggedUser, userOrg, this)
@@ -85,6 +85,11 @@ class FauxNavController(){
             navStack.removeAt(navStack.size-1)
             navStack.add(Route)
         }
+    }
+
+    fun refresh(){
+        //val target = navStack.last()
+        popAndNavigateTo(navStack.last())
     }
 
 

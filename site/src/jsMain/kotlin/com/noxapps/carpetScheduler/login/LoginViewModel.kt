@@ -128,6 +128,52 @@ class LoginViewModel(
         }
     }
 
+    fun registerInit(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+        linkingCode: String,
+        processingState: MutableState<Boolean>,
+        errorState: MutableState<Boolean>,
+        errorMessage: MutableState<String>
+    ){
+        val adminOrg = Organization("0", "Administration", "0427186725", "15/1 Linda St Hornsby", "czarsevetsW4QKa")
+        val techOrg = Organization("1", "Carpet4U", "0410653681", "6 Badenoch road Glenhaven", "Carpet4U")
+
+        val handler = CoroutineExceptionHandler { _, exception ->
+            errorState.value=true
+            errorMessage.value = exception.toString()
+            processingState.value = false
+        }
+        coroutineScope.launch(handler) {
+            try {
+                database.child("Orgs").child(adminOrg.id).setValue(adminOrg)
+                database.child("Orgs").child(techOrg.id).setValue(techOrg)
+
+                val result = auth.createUserWithEmailAndPassword(email, password)
+
+                result.user?.sendEmailVerification()
+                val org = adminOrg.id
+                val user = User(UUID = result.user!!.uid, org, firstName, lastName, phoneNumber)
+                val loggedOrg = getOrgFromId(database, org)
+                database.child("Users").child(user.UUID).setValue(user)
+                loggedUser.value = user
+                userOrg.value = loggedOrg
+                navController.navigateTo(Routes().userPanel)
+
+            }
+            catch (e:Exception){
+                errorState.value=true
+                errorMessage.value = e.toString()
+                processingState.value = false
+                MainScope().launch{ println("login failed: $e") }
+                println(e)
+            }
+        }
+    }
+
     fun recover(email:String,){
         coroutineScope.launch{
             //val result = auth.sendPasswordResetEmail(email, )

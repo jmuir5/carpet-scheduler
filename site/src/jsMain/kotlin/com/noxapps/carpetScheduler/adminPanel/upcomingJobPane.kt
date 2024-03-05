@@ -44,7 +44,7 @@ fun ColumnScope.upcomingJobPane(
         .overflow(Overflow.Auto, Overflow.Auto)
     ) {
         if(!jobPaneLoadedFlag.value){
-            LoadingNotice("Jobs")
+            loadingNotice("Jobs")
             if(!loadAttempted){
                 loadAttempted=true
                 viewModel.getJobs(

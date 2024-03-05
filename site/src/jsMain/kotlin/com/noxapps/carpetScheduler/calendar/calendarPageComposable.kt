@@ -8,9 +8,7 @@ import com.noxapps.carpetScheduler.calendar.dialogues.LoadingDialogue
 import com.noxapps.carpetScheduler.calendar.dialogues.SaturdayDialogue
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.noxapps.carpetScheduler.dataStructures.DateObject
-import com.noxapps.carpetScheduler.dataStructures.Organization
 import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
-import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.navigation.FauxNavController
 import com.varabyte.kobweb.compose.css.Height
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -25,8 +23,6 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaArrowLeft
 import com.varabyte.kobweb.silk.components.icons.fa.FaArrowRight
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
-import dev.gitlive.firebase.FirebaseApp
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.number
 
@@ -37,12 +33,12 @@ import kotlinx.datetime.*
 
 
 @Composable
-fun calendarPage(
+fun calendarPageComposable(
     currentJob: MutableState<TrueJobObject>,
     navController: FauxNavController,
     previewFlag:Boolean=false,
     viewModel: CalendarViewModel,
-    //memeTest:Boolean = false
+    memeTest:Boolean = false
 ){
     val currentMonth = remember { mutableStateOf(viewModel.todayMonth) }
     val currentYear = remember{mutableStateOf(viewModel.todayYear)}

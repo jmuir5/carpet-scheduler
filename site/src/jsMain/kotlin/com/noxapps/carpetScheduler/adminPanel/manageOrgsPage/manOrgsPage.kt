@@ -1,10 +1,8 @@
 package com.noxapps.carpetScheduler.adminPanel.manageOrgsPage
 
 import androidx.compose.runtime.*
-import com.noxapps.carpetScheduler.adminPanel.LoadingNotice
-import com.noxapps.carpetScheduler.adminPanel.jobCard
+import com.noxapps.carpetScheduler.adminPanel.loadingNotice
 import com.noxapps.carpetScheduler.dataStructures.Organization
-import com.noxapps.carpetScheduler.dataStructures.TrueJobObject
 import com.noxapps.carpetScheduler.dataStructures.User
 import com.noxapps.carpetScheduler.forum.forumComponents.labeledString
 import com.noxapps.carpetScheduler.login.components.styledInput
@@ -18,7 +16,6 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.forms.Button
 import dev.gitlive.firebase.FirebaseApp
 import kotlinx.coroutines.CoroutineScope
@@ -183,7 +180,7 @@ fun manOrgsPage(
                     .overflow(Overflow.Auto, Overflow.Auto)
                 ) {
                     if(!orgLoadedFlag.value){
-                        LoadingNotice("Organisations")
+                        loadingNotice("Organisations")
                         if(!loadAttempted){
                             loadAttempted=true
                             viewModel.getOrgs(

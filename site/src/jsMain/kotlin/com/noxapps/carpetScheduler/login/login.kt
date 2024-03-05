@@ -265,7 +265,10 @@ fun login(
                         if(it.key == "Enter")  {
                             passwordValidErrorState.value = !password.value.isValidPassword()
                             passwordMatchErrorState.value = (password.value!=confirmPassword.value)||password.value.isEmpty()
-                            linkingCodeErrorState.value = !viewModel.linkingCodes.contains(linkingCode.value)
+                            linkingCodeErrorState.value = if (viewModel.linkingCodes.isEmpty()){
+                                linkingCode.value!="init"
+                            }
+                            else !viewModel.linkingCodes.contains(linkingCode.value)
                             emailErrorState.value = !email.value.isValidEmail()
                             nameErrorState.value = firstName.value.isEmpty()||lastName.value.isEmpty()
                             phoneErrorState.value = try{
@@ -276,6 +279,70 @@ fun login(
                             if(!registerErrorStates.containsValue(true)){
                                 registerErrorMessageState.value = false
                                 processingState.value=true
+                                if(viewModel.linkingCodes.isEmpty()){
+                                    viewModel.registerInit(
+                                        email.value,
+                                        password.value,
+                                        firstName.value,
+                                        lastName.value,
+                                        phoneNumber.value,
+                                        linkingCode.value,
+                                        processingState,
+                                        executeErrorState,
+                                        errorMessage
+                                    )
+                                }
+                                else{
+                                    viewModel.register(
+                                        email.value,
+                                        password.value,
+                                        firstName.value,
+                                        lastName.value,
+                                        phoneNumber.value,
+                                        linkingCode.value,
+                                        processingState,
+                                        executeErrorState,
+                                        errorMessage
+                                    )
+                                }
+                            }
+                            else registerErrorMessageState.value = true
+                        }
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        passwordValidErrorState.value = !password.value.isValidPassword()
+                        passwordMatchErrorState.value = (password.value!=confirmPassword.value)||password.value.isEmpty()
+                        linkingCodeErrorState.value = if (viewModel.linkingCodes.isEmpty()){
+                            linkingCode.value!="init"
+                        }
+                        else !viewModel.linkingCodes.contains(linkingCode.value)
+                        emailErrorState.value = !email.value.isValidEmail()
+                        nameErrorState.value = firstName.value.isEmpty()||lastName.value.isEmpty()
+                        phoneErrorState.value = try{
+                            phoneNumber.value.toLong()<10000000
+                        } catch (e:Exception){
+                            true
+                        }
+                        if(!registerErrorStates.containsValue(true)){
+                            registerErrorMessageState.value = false
+                            processingState.value=true
+                            if(viewModel.linkingCodes.isEmpty()){
+                                viewModel.registerInit(
+                                    email.value,
+                                    password.value,
+                                    firstName.value,
+                                    lastName.value,
+                                    phoneNumber.value,
+                                    linkingCode.value,
+                                    processingState,
+                                    executeErrorState,
+                                    errorMessage
+                                )
+                            }
+                            else{
                                 viewModel.register(
                                     email.value,
                                     password.value,
@@ -288,36 +355,6 @@ fun login(
                                     errorMessage
                                 )
                             }
-                            else registerErrorMessageState.value = true
-                        }
-                    }
-                }
-
-                Button(
-                    onClick = {
-                        passwordValidErrorState.value = !password.value.isValidPassword()
-                        passwordMatchErrorState.value = (password.value!=confirmPassword.value)||password.value.isEmpty()
-                        linkingCodeErrorState.value = !viewModel.linkingCodes.contains(linkingCode.value)
-                        emailErrorState.value = !email.value.isValidEmail()
-                        nameErrorState.value = firstName.value.isEmpty()||lastName.value.isEmpty()
-                        phoneErrorState.value = try{
-                            phoneNumber.value.toLong()<10000000
-                        } catch (e:Exception){
-                            true
-                        }
-                        if(!registerErrorStates.containsValue(true)){
-                            registerErrorMessageState.value = false
-                            viewModel.register(
-                                email.value,
-                                password.value,
-                                firstName.value,
-                                lastName.value,
-                                phoneNumber.value,
-                                linkingCode.value,
-                                processingState,
-                                executeErrorState,
-                                errorMessage
-                            )
                         }
                         else registerErrorMessageState.value = true
 
@@ -401,3 +438,4 @@ fun List<MutableState<Boolean>>.containsValue(value:Boolean):Boolean{
     }
     return false
 }
+

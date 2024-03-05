@@ -42,9 +42,9 @@ fun RowScope.Day(
     var jobWeightTotal =0
     jobs.map { jobWeightTotal+=it.size }
     val newJobFits = when(true){
-        (jobWeightTotal>=12) ->0
-        (jobWeightTotal+pendingJob.size()<=12) ->1
-        else-> 2
+        (jobWeightTotal>=12) ->0 //day already full
+        (jobWeightTotal+pendingJob.size()<=12) ->1 //job fits
+        else-> 2    //job doesnt fit but day not full
     }
     val isPast = dayOfWeek<=today
     val isToday = dayOfWeek==today
@@ -54,7 +54,7 @@ fun RowScope.Day(
         0 -> Colors.LightGray
         //(jobWeightTotal+3/*pendingJob.size*/>12)->Color.rgb(204,204,204)
         1 -> Colors.Transparent
-        2 -> Colors.Azure
+        2 -> Colors.LightGray
         else ->Colors.AntiqueWhite
     }
     if (isPast) bgColor = Colors.LightGray
